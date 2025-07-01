@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Configure Gemini API
-genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
+genai.configure(api_key=os.getenv('GEMINI_API_KEY'))
 
 # Hardcoded grounding content from Aakash's newsletter
 GROUNDING_CONTENT = """The #1 mistake people make in trying to get interviews? Sharing a generic resume or customizing poorly. There are 6 key principles of customization:

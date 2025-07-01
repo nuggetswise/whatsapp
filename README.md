@@ -42,8 +42,22 @@ This content is used to provide specific, actionable feedback that's grounded in
 - **AI Model**: Gemini (currently using mock responses)
 - **Grounding**: Real article content from creator newsletters
 
+## Environment Setup
+
+1. **Set your Gemini API key**:
+   ```bash
+   export GEMINI_API_KEY='your-gemini-api-key-here'
+   ```
+   
+   Or create a `.env` file:
+   ```
+   GEMINI_API_KEY=your-gemini-api-key-here
+   ```
+
+2. **Get your API key** from [Google AI Studio](https://makersuite.google.com/app/apikey)
+
 ## Next Steps
 
-- Replace the mock `call_gemini()` function with actual Gemini API integration
 - Add more creators and grounding content
-- Implement user authentication and feedback history 
+- Implement user authentication and feedback history
+- Add more role types and customization options 
