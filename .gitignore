@@ -189,6 +189,8 @@ Thumbs.db
 .env.local
 .env.production
 secrets.toml
+env.example
+env.sample
 
 # PDF files (user uploads)
 uploads/
