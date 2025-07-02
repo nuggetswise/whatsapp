@@ -308,7 +308,9 @@ def extract_text_from_pdf(pdf_file) -> Optional[str]:
         pdf_reader = PyPDF2.PdfReader(pdf_file)
         text = ""
         for page in pdf_reader.pages:
-            text += page.extract_text() + "\n"
+            page_text = page.extract_text()
+            if page_text:
+                text += page_text + "\n"
         return text.strip()
     except Exception as e:
         st.error(f"Error reading PDF: {str(e)}")
