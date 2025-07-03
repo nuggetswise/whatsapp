@@ -72,39 +72,59 @@ def test_new_conversation_engine():
         twilio_payload = {
             'From': 'whatsapp:+1234567890',
             'To': 'whatsapp:+9876543210',
-            'Body': 'https://example.com/resume.pdf',
+            'Body': 'http://localhost:5050/static/Mandip%20PM%20AI%20Resume%20PD.pdf',
             'MessageSid': 'SM1234567890abcdef'
         }
         
         response = client.post('/whatsapp-inbound', data=twilio_payload)
         print(f"Status: {response.status_code}")
-        print(f"Response: {response.data.decode()}")
+        response_text = response.data.decode()
+        print(f"Response length: {len(response_text)} characters")
+        print(f"Response preview: {response_text[:200]}...")
         
-        # Test 2: Follow-up message (user chooses skills)
-        print("\n📱 Test 2: User chooses skills (1)")
-        twilio_payload = {
-            'From': 'whatsapp:+1234567890',
-            'To': 'whatsapp:+9876543210',
-            'Body': '1',
-            'MessageSid': 'SM1234567890abcdef'
-        }
-        
-        response = client.post('/whatsapp-inbound', data=twilio_payload)
-        print(f"Status: {response.status_code}")
-        print(f"Response: {response.data.decode()}")
-        
-        # Test 3: User asks for examples
-        print("\n📱 Test 3: User asks for examples")
-        twilio_payload = {
-            'From': 'whatsapp:+1234567890',
-            'To': 'whatsapp:+9876543210',
-            'Body': 'YES',
-            'MessageSid': 'SM1234567890abcdef'
-        }
-        
-        response = client.post('/whatsapp-inbound', data=twilio_payload)
-        print(f"Status: {response.status_code}")
-        print(f"Response: {response.data.decode()}")
+        if response.status_code == 200 and "Resume Review by Aakash" in response_text:
+            print("✅ Success! Conversation engine started properly")
+            
+            # Test 2: Follow-up message (user chooses skills)
+            print("\n📱 Test 2: User chooses skills (1)")
+            twilio_payload = {
+                'From': 'whatsapp:+1234567890',
+                'To': 'whatsapp:+9876543210',
+                'Body': '1',
+                'MessageSid': 'SM1234567890abcdef'
+            }
+            
+            response = client.post('/whatsapp-inbound', data=twilio_payload)
+            print(f"Status: {response.status_code}")
+            response_text = response.data.decode()
+            print(f"Response preview: {response_text[:200]}...")
+            
+            if "Skills & Keywords Analysis" in response_text:
+                print("✅ Success! Skills detail message generated")
+                
+                # Test 3: User asks for examples
+                print("\n📱 Test 3: User asks for examples")
+                twilio_payload = {
+                    'From': 'whatsapp:+1234567890',
+                    'To': 'whatsapp:+9876543210',
+                    'Body': 'YES',
+                    'MessageSid': 'SM1234567890abcdef'
+                }
+                
+                response = client.post('/whatsapp-inbound', data=twilio_payload)
+                print(f"Status: {response.status_code}")
+                response_text = response.data.decode()
+                print(f"Response preview: {response_text[:200]}...")
+                
+                if "Specific Skills Examples" in response_text:
+                    print("✅ Success! Examples provided")
+                else:
+                    print("❌ Expected examples but got different response")
+            else:
+                print("❌ Expected skills analysis but got different response")
+        else:
+            print("❌ Expected resume review but got different response")
+            print("This might be due to missing resume file or processing error")
 
 def simulate_whatsapp_conversation():
     """Simulate a complete WhatsApp conversation without sending actual messages."""
