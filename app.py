@@ -38,7 +38,8 @@ def health_check():
             "health": "/api/health",
             "logs": "/api/logs",
             "newsletter_status": "/api/newsletter-status",
-            "whatsapp_inbound": "/whatsapp-inbound"
+            "whatsapp_inbound": "/whatsapp-inbound",
+            "whatsapp_status": "/whatsapp-status"
         }
     }
 

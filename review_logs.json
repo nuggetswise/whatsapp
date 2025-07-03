@@ -960,5 +960,101 @@
       "jd_parsed_successfully": true,
       "whatsapp_sent": true
     }
+  },
+  {
+    "timestamp": "2025-07-02T16:53:33.112764",
+    "phone": "+14379861805",
+    "action": "resume_upload",
+    "metadata": {
+      "resume_url": "http://localhost:5050/static/Mandip%20PM%20AI%20Resume%20PD.pdf",
+      "job_url": null,
+      "has_user_message": false,
+      "has_job_url": false,
+      "user_agent": "curl/8.7.1"
+    }
+  },
+  {
+    "timestamp": "2025-07-02T16:53:37.038680",
+    "phone": "+14379861805",
+    "action": "review_completed",
+    "metadata": {
+      "confidence_score": 100,
+      "newsletter_chunks_used": 5,
+      "had_job_url": false,
+      "jd_parsed_successfully": false,
+      "whatsapp_sent": true
+    }
+  },
+  {
+    "timestamp": "2025-07-02T17:00:40.346896",
+    "phone": "+14379861805",
+    "action": "resume_upload",
+    "metadata": {
+      "resume_url": "http://localhost:5050/static/Mandip%20PM%20AI%20Resume%20PD.pdf",
+      "job_url": "https://job-boards.greenhouse.io/hugeinc/jobs/6978138",
+      "has_user_message": true,
+      "has_job_url": true,
+      "user_agent": "curl/8.7.1"
+    }
+  },
+  {
+    "timestamp": "2025-07-02T17:00:44.622996",
+    "phone": "+14379861805",
+    "action": "review_completed",
+    "metadata": {
+      "confidence_score": 29,
+      "newsletter_chunks_used": 3,
+      "had_job_url": true,
+      "jd_parsed_successfully": true,
+      "whatsapp_sent": false
+    }
+  },
+  {
+    "timestamp": "2025-07-02T17:05:46.664182",
+    "phone": "+14379861805",
+    "action": "resume_upload",
+    "metadata": {
+      "resume_url": "http://localhost:5050/static/Mandip%20PM%20AI%20Resume%20PD.pdf",
+      "job_url": "https://job-boards.greenhouse.io/hugeinc/jobs/6978138",
+      "has_user_message": true,
+      "has_job_url": true,
+      "user_agent": "python-requests/2.32.4"
+    }
+  },
+  {
+    "timestamp": "2025-07-02T17:05:51.394625",
+    "phone": "+14379861805",
+    "action": "review_completed",
+    "metadata": {
+      "confidence_score": 29,
+      "newsletter_chunks_used": 3,
+      "had_job_url": true,
+      "jd_parsed_successfully": true,
+      "whatsapp_sent": false
+    }
+  },
+  {
+    "timestamp": "2025-07-02T17:07:05.775220",
+    "phone": "+14379861805",
+    "action": "resume_upload",
+    "metadata": {
+      "resume_url": "http://localhost:5050/static/Mandip%20PM%20AI%20Resume%20PD.pdf",
+      "job_url": "https://job-boards.greenhouse.io/hugeinc/jobs/6978138",
+      "has_user_message": true,
+      "has_job_url": true,
+      "user_agent": "python-requests/2.32.4"
+    }
+  },
+  {
+    "timestamp": "2025-07-02T17:07:09.953221",
+    "phone": "+14379861805",
+    "action": "review_completed",
+    "metadata": {
+      "confidence_score": 29,
+      "newsletter_chunks_used": 3,
+      "had_job_url": true,
+      "jd_parsed_successfully": true,
+      "whatsapp_sent": false
+    }
   }
 ]
