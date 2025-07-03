@@ -82,9 +82,11 @@ def whatsapp_inbound():
             # Download the PDF and process as resume
             import requests
             import io
+            twilio_sid = os.environ.get("TWILIO_ACCOUNT_SID")
+            twilio_token = os.environ.get("TWILIO_AUTH_TOKEN")
             resp.message("✅ Got your PDF resume! Processing with my newsletter expertise. You'll receive your review soon.")
             try:
-                resume_response = requests.get(media_url)
+                resume_response = requests.get(media_url, auth=(twilio_sid, twilio_token))
                 if resume_response.status_code != 200:
                     raise Exception(f"Failed to download PDF: {resume_response.status_code}")
                 resume_content = resume_response.content
