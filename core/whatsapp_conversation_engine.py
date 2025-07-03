@@ -68,7 +68,7 @@ class ConversationEngine:
         messages = [{
             "type": "text",
             "content": summary_message,
-            "quick_replies": self._get_choice_quick_replies()
+            "quick_replies": self.get_contextual_quick_replies(state)
         }]
         
         return messages, state
@@ -148,14 +148,73 @@ Hey {user_name}! I analyzed your resume for the {job_title} role at {company}.
         
         return summary
     
-    def _get_choice_quick_replies(self) -> List[Dict[str, str]]:
-        """Get quick reply options for user choice"""
-        return [
-            {"id": "1", "title": "Skills & Keywords"},
-            {"id": "2", "title": "Experience & Achievements"},
-            {"id": "3", "title": "Formatting & ATS"},
-            {"id": "4", "title": "All Areas (Complete Review)"}
-        ]
+    def get_contextual_quick_replies(self, state: Dict[str, Any]) -> List[Dict[str, str]]:
+        """Get contextual quick replies based on conversation state"""
+        current_step = state.get("step", "initial")
+        last_choice = state.get("last_choice", "")
+        
+        # Initial state - show main options
+        if current_step in ["summary_sent", "initial"]:
+            return [
+                {"id": "1", "title": "Skills & Keywords"},
+                {"id": "2", "title": "Experience & Achievements"},
+                {"id": "3", "title": "Formatting & ATS"},
+                {"id": "4", "title": "All Areas (Complete Review)"}
+            ]
+        
+        # After showing skills detail
+        elif current_step == "skills_detail" or last_choice == "skills":
+            return [
+                {"id": "YES", "title": "Show Specific Examples"},
+                {"id": "2", "title": "Experience & Achievements"},
+                {"id": "3", "title": "Formatting & ATS"},
+                {"id": "4", "title": "All Areas (Complete Review)"}
+            ]
+        
+        # After showing experience detail
+        elif current_step == "experience_detail" or last_choice == "experience":
+            return [
+                {"id": "YES", "title": "Show Specific Examples"},
+                {"id": "1", "title": "Skills & Keywords"},
+                {"id": "3", "title": "Formatting & ATS"},
+                {"id": "4", "title": "All Areas (Complete Review)"}
+            ]
+        
+        # After showing formatting detail
+        elif current_step == "formatting_detail" or last_choice == "formatting":
+            return [
+                {"id": "YES", "title": "Show Specific Examples"},
+                {"id": "1", "title": "Skills & Keywords"},
+                {"id": "2", "title": "Experience & Achievements"},
+                {"id": "4", "title": "All Areas (Complete Review)"}
+            ]
+        
+        # After complete review
+        elif current_step == "complete_review":
+            return [
+                {"id": "YES", "title": "Show Specific Examples"},
+                {"id": "1", "title": "Skills & Keywords"},
+                {"id": "2", "title": "Experience & Achievements"},
+                {"id": "3", "title": "Formatting & ATS"}
+            ]
+        
+        # Engagement question state
+        elif current_step == "engagement_question":
+            return [
+                {"id": "A", "title": "ATS Screening"},
+                {"id": "B", "title": "Interview Standing Out"},
+                {"id": "C", "title": "Job Requirements"},
+                {"id": "D", "title": "Formatting & Presentation"}
+            ]
+        
+        # Default fallback
+        else:
+            return [
+                {"id": "1", "title": "Skills & Keywords"},
+                {"id": "2", "title": "Experience & Achievements"},
+                {"id": "3", "title": "Formatting & ATS"},
+                {"id": "4", "title": "All Areas (Complete Review)"}
+            ]
     
     def _handle_choice_response(self, 
                                user_input: str, 
@@ -181,26 +240,33 @@ Hey {user_name}! I analyzed your resume for the {job_title} role at {company}.
         if choice == "skills":
             messages.append({
                 "type": "text",
-                "content": self._create_skills_detail_message(state)
+                "content": self._create_skills_detail_message(state),
+                "quick_replies": self.get_contextual_quick_replies(state)
             })
             state["step"] = ConversationStep.SKILLS_DETAIL.value
             
         elif choice == "experience":
             messages.append({
                 "type": "text", 
-                "content": self._create_experience_detail_message(state)
+                "content": self._create_experience_detail_message(state),
+                "quick_replies": self.get_contextual_quick_replies(state)
             })
             state["step"] = ConversationStep.EXPERIENCE_DETAIL.value
             
         elif choice == "formatting":
             messages.append({
                 "type": "text",
-                "content": self._create_formatting_detail_message(state)
+                "content": self._create_formatting_detail_message(state),
+                "quick_replies": self.get_contextual_quick_replies(state)
             })
             state["step"] = ConversationStep.FORMATTING_DETAIL.value
             
         elif choice == "complete":
-            messages.extend(self._create_complete_review_messages(state))
+            complete_messages = self._create_complete_review_messages(state)
+            # Add quick replies to the last message
+            if complete_messages:
+                complete_messages[-1]["quick_replies"] = self.get_contextual_quick_replies(state)
+            messages.extend(complete_messages)
             state["step"] = ConversationStep.COMPLETE_REVIEW.value
         
         # Add engagement question
@@ -209,7 +275,7 @@ Hey {user_name}! I analyzed your resume for the {job_title} role at {company}.
             messages.append({
                 "type": "text",
                 "content": engagement_message,
-                "quick_replies": self._get_concern_quick_replies()
+                "quick_replies": self.get_contextual_quick_replies(state)
             })
             state["step"] = ConversationStep.ENGAGEMENT_QUESTION.value
         
@@ -477,7 +543,7 @@ This will help me give you more targeted advice! 🎯"""
         if user_input_lower in ["yes", "examples", "show me"]:
             # Provide specific examples
             examples_message = self._create_specific_examples(state)
-            return [{"type": "text", "content": examples_message}], state
+            return [{"type": "text", "content": examples_message, "quick_replies": self.get_contextual_quick_replies(state)}], state
         else:
             # Default to engagement question
             return self._handle_engagement_response("general", state)
@@ -553,7 +619,7 @@ You can:
 
 What would you like to focus on?"""
         
-        return [{"type": "text", "content": fallback_message}], state
+        return [{"type": "text", "content": fallback_message, "quick_replies": self.get_contextual_quick_replies(state)}], state
     
     def _get_confidence_text(self, confidence: float) -> str:
         """Convert confidence score to user-friendly text"""

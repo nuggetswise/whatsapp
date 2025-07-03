@@ -150,7 +150,15 @@ CRITICAL RULES:
 11. Emphasize newsletter-grounded authenticity and creator expertise
 12. For each section (Strengths, Areas to Improve, Next Steps), provide at least 2-3 detailed bullet points or examples, not just a summary.
 13. Be as specific and actionable as possible. Give concrete suggestions and examples, not just generalities.
-14. If possible, elaborate on why each suggestion matters for the target job/company.'''
+14. If possible, elaborate on why each suggestion matters for the target job/company.
+15. Format your response in a clean, professional structure similar to Meta AI:
+    - Start with "Based on my newsletter framework and expertise, I'll review your resume with a focus on customization and impact."
+    - Use "_Review:_" as the main section header
+    - Use numbered lists (1., 2., 3., etc.) for specific points
+    - Use "_Framework-based review:_" to reference newsletter principles
+    - Use "_Recommendations:_" for actionable next steps
+    - Keep tone professional and authoritative while maintaining creator authenticity
+    - Use first person ("I", "my") to maintain creator voice'''
     
     def _create_user_prompt(self, resume_text: str, jd_parsed: Dict[str, Any], 
                           newsletter_content: str, scoring_result: Dict[str, Any]) -> str:
@@ -195,21 +203,48 @@ INTERNAL ANALYSIS (for your guidance only):
 - Confidence Score: {confidence_score}/100
 - Guidance: {overlap_guidance}
 
-Please provide a resume review using ONLY the newsletter content above. Structure your response as:
+EXACT FORMAT REQUIRED - Follow this structure precisely:
 
-1. Overall Assessment (no scores shown to user)
-2. Strengths (reference newsletter principles, not section names)
-3. Areas to Improve (reference newsletter principles for this role)  
-4. Next Steps for {company_name} Role (provide 2-3 company-specific, actionable steps based on newsletter content)
+Based on my newsletter framework and expertise, I'll review your resume with a focus on customization and impact.
+
+_Review:_
+
+1. [First specific improvement area with newsletter principle reference]
+2. [Second specific improvement area with newsletter principle reference]
+3. [Third specific improvement area with newsletter principle reference]
+4. [Fourth specific improvement area with newsletter principle reference]
+5. [Fifth specific improvement area with newsletter principle reference]
+
+_Framework-based review:_
+
+Based on my newsletter principles, your resume covers these essential areas:
+
+1. [First newsletter principle]: [How it applies to this specific resume]
+2. [Second newsletter principle]: [How it applies to this specific resume]
+3. [Third newsletter principle]: [How it applies to this specific resume]
+4. [Fourth newsletter principle]: [How it applies to this specific resume]
+
+_Recommendations:_
+
+1. [First specific, actionable recommendation for {company_name}]
+2. [Second specific, actionable recommendation for {company_name}]
+3. [Third specific, actionable recommendation for {company_name}]
+4. [Fourth specific, actionable recommendation for {company_name}]
+5. [Fifth specific, actionable recommendation for {company_name}]
 
 CRITICAL INSTRUCTIONS:
+- Follow the EXACT format above - do not deviate from the structure
 - Do NOT show any scores or percentages to the user
 - Keep response under {MAX_OUTPUT_CHAR} characters total
-- Make Next Steps specific to {company_name} when job description is provided
+- Make recommendations specific to {company_name} when job description is provided
 - Reference newsletter principles, not section names
 - Do NOT repeat generic advice - provide specific, actionable steps for {company_name}
 - Use the overlap analysis internally to guide your feedback tone and focus
 - Base all advice on the newsletter content provided
+- Use numbered lists (1., 2., 3., etc.) for all points
+- Maintain creator voice with first person ("I", "my") throughout
+- Keep tone professional while being authentic and helpful
+- Use the exact section headers: "_Review:_", "_Framework-based review:_", "_Recommendations:_"
 
 Remember: If something isn't covered in the newsletter content, say so explicitly."""
     
@@ -243,15 +278,11 @@ Remember: If something isn't covered in the newsletter content, say so explicitl
         # Clean up the review text
         formatted_text = self._clean_review_text(review_text)
         
-        # Add WhatsApp-friendly formatting with creator context
-        whatsapp_text = f"""🎯 *Resume Review by Aakash*
+        # Add clean formatting with newsletter attribution (no emojis)
+        whatsapp_text = f"""{formatted_text}
 
-{formatted_text}
-
-📚 *Based on my newsletter: How to Customize Your Resume to Actually Get Interviews*
-🔗 https://www.news.aakashg.com/p/how-to-customize-your-resume-to-actually"""
-        
-        # No truncation - let the WhatsApp response system handle message splitting
+Based on my newsletter: How to Customize Your Resume to Actually Get Interviews
+https://www.news.aakashg.com/p/how-to-customize-your-resume-to-actually"""
         
         return whatsapp_text
     
@@ -326,22 +357,31 @@ Remember: If something isn't covered in the newsletter content, say so explicitl
         confidence_score = scoring_result.get('confidence_score', 0)
         
         # Get basic strengths and improvements from scoring
-        basic_review = f"""Based on my newsletter content analysis:
+        basic_review = f"""Based on my newsletter framework and expertise, I'll review your resume with a focus on customization and impact.
 
-💪 *Key Strengths:*
-• Shows relevant professional experience
-• Demonstrates career progression
+_Review:_
 
-🔧 *Areas to Improve:*
-• Better keyword alignment with job requirements
-• More quantified achievements
+1. Your resume shows relevant professional experience that can be optimized for better impact
+2. There's room to improve keyword alignment with job requirements
+3. Quantified achievements could be more specific and impactful
+4. The overall structure provides a good foundation for customization
 
-🎯 *Next Steps for the target company Role:*
-• Research the target company's culture and values
-• Customize experience for this specific role"""
-        
-        if newsletter_chunks:
-            basic_review += f"\n\n📚 *Based on my newsletter: How to Customize Your Resume to Actually Get Interviews*\n🔗 https://www.news.aakashg.com/p/how-to-customize-your-resume-to-actually"
+_Framework-based review:_
+
+Based on my newsletter principles, your resume covers these essential areas:
+
+1. Professional experience: Present but needs better positioning for target roles
+2. Skills and qualifications: Implicitly mentioned through experience
+3. Achievements: Could be more specific and quantifiable
+4. Customization: Needs alignment with specific job requirements
+
+_Recommendations:_
+
+1. Research the target company's culture and values to better align your experience
+2. Customize your bullet points for this specific role using relevant keywords
+3. Add specific metrics and quantifiable results to your achievements
+4. Focus on experiences that directly relate to the target position
+5. Consider adding a professional summary that highlights your fit for this role"""
         
         return basic_review
     

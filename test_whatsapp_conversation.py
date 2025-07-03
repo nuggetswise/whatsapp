@@ -185,8 +185,83 @@ def test_follow_up_conversation():
         else:
             print("🤖 Response: I'm here to help with your resume! You can ask me to elaborate, request help with a different role, or ask for specific examples.")
 
+def test_quick_replies():
+    """Test quick reply functionality in conversation engine."""
+    print("\n🔘 Testing Quick Reply Functionality...")
+    
+    from core.whatsapp_conversation_engine import start_conversation, continue_conversation
+    
+    # Mock resume and job data
+    resume_data = {
+        "success": True,
+        "overview": "Strong PM candidate with AI experience",
+        "strengths": ["Technical background", "AI/ML experience"],
+        "concerns": ["Could improve metrics", "Missing quantifiable results"],
+        "suggestions": ["Add metrics", "Quantify achievements"]
+    }
+    
+    job_data = {
+        "title": "Product Manager",
+        "company": "Tech Company"
+    }
+    
+    # Test 1: Initial conversation with quick replies
+    print("\n📱 Test 1: Initial conversation")
+    messages, engine_state = start_conversation("User", resume_data, job_data)
+    
+    quick_replies_found = False
+    for msg in messages:
+        if 'quick_replies' in msg and msg['quick_replies']:
+            quick_replies_found = True
+            print(f"✅ Quick replies found: {len(msg['quick_replies'])} options")
+            for reply in msg['quick_replies']:
+                print(f"   🔘 {reply['title']} (ID: {reply['id']})")
+    
+    if not quick_replies_found:
+        print("❌ No quick replies found in initial conversation")
+    
+    # Test 2: Follow-up with quick replies
+    print("\n📱 Test 2: Follow-up conversation")
+    messages, new_engine_state = continue_conversation("1", engine_state)
+    
+    quick_replies_found = False
+    for msg in messages:
+        if 'quick_replies' in msg and msg['quick_replies']:
+            quick_replies_found = True
+            print(f"✅ Quick replies found: {len(msg['quick_replies'])} options")
+            for reply in msg['quick_replies']:
+                print(f"   🔘 {reply['title']} (ID: {reply['id']})")
+    
+    if not quick_replies_found:
+        print("❌ No quick replies found in follow-up conversation")
+    
+    # Test 3: Test quick reply integration with Flask
+    print("\n📱 Test 3: Flask integration test")
+    with app.test_client() as client:
+        # Start conversation
+        twilio_payload = {
+            'From': 'whatsapp:+1234567890',
+            'To': 'whatsapp:+9876543210',
+            'Body': 'http://localhost:5050/static/Mandip%20PM%20AI%20Resume%20PD.pdf',
+            'MessageSid': 'SM1234567890abcdef'
+        }
+        
+        response = client.post('/whatsapp-inbound', data=twilio_payload)
+        response_text = response.data.decode()
+        
+        print(f"📊 Response length: {len(response_text)} characters")
+        print(f"📋 Response preview: {response_text[:500]}...")
+        
+        # Check for quick reply options as plain text
+        if 'Reply with one of the following options:' in response_text:
+            print("✅ Quick reply options found in TwiML response as plain text")
+        else:
+            print("❌ Quick reply options NOT found in TwiML response as plain text")
+            print("Response preview:", response_text[:500])
+
 if __name__ == "__main__":
     test_whatsapp_conversation()
     test_new_conversation_engine()
     simulate_whatsapp_conversation()
-    test_follow_up_conversation() 
+    test_follow_up_conversation()
+    test_quick_replies() 
